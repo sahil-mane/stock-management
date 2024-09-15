@@ -2,32 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.search{
+    @apply grid ;
+    grid-template-columns:.8fr .1fr;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+div > input {
+    @apply w-full p-2  rounded-xl;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+div > label {
+    @apply text-lg font-bold;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+div + button {
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 mt-2 rounded-xl;
+}
+tr>th{
+    @apply p-2 text-xl border-2 border-black rounded-full;
+}
+
+tr>td{
+    @apply p-2 text-center border-2 border-black rounded-full;
 }
