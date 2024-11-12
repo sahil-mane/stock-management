@@ -8,7 +8,7 @@ export default function Home() {
   const [alert, setAlert] = useState(false);
   const [query, setQuery] = useState("");
   const [dropdown, setDropdown] = useState([]);
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   // this is mee
 
   const handleChange = (e) => {
@@ -35,7 +35,7 @@ export default function Home() {
         setProductForm({});
         setTimeout(() => {
           setAlert(false);
-        }, 3000);        
+        }, 3000);
       }
     } catch (error) {
       console.error(error);
@@ -62,20 +62,18 @@ export default function Home() {
   };
 
   const dropdownEdit = async (e) => {
-    let value = e.target.value
+    let value = e.target.value;
     setQuery(value);
-    if(value.length > 2)
-    {
+    if (value.length > 2) {
       setDropdown([]);
-      const response = await fetch('/api/search?query=' + query);
+      const response = await fetch("/api/search?query=" + query);
       let rjson = await response.json();
       setDropdown(rjson.products || []);
-      console.log(rjson.products);      
-    }
-    else{
+      console.log(rjson.products);
+    } else {
       setDropdown([]);
     }
-  }
+  };
 
   // const buttonAction = async (action, productName, itemquantity) => {
   //   try {
@@ -87,15 +85,15 @@ export default function Home() {
   //       },
   //       body: JSON.stringify({ action, productName, itemquantity }),
   //     });
-  
+
   //     const res = await response.json();
   //     console.log('API response:', res); // Log response to check
-  
+
   //     if (response.ok) {
-  //       const updatedQuantity = action === "plus" 
-  //         ? parseInt(itemquantity) + 1 
+  //       const updatedQuantity = action === "plus"
+  //         ? parseInt(itemquantity) + 1
   //         : parseInt(itemquantity) - 1;
-  
+
   //       // Update the product quantity in both `allProducts` and `dropdown`
   //       setAllProducts((prevProducts) =>
   //         prevProducts.map((product) =>
@@ -104,7 +102,7 @@ export default function Home() {
   //             : product
   //         )
   //       );
-  
+
   //       setDropdown((prevDropdown) =>
   //         prevDropdown.map((product) =>
   //           product.productName === productName
@@ -113,7 +111,7 @@ export default function Home() {
   //         )
   //       );
   //     }
-  
+
   //     setLoading(false);
   //   } catch (error) {
   //     console.error("Error in updating quantity:", error);
@@ -123,17 +121,19 @@ export default function Home() {
   const buttonAction = async (action, productName, itemquantity) => {
     try {
       // Find the product index in `allProducts`
-      let index = allProducts.findIndex((item) => item.productName === productName);
+      let index = allProducts.findIndex(
+        (item) => item.productName === productName
+      );
       let newProducts = JSON.parse(JSON.stringify(allProducts)); // Deep clone
-  
+
       // Update the quantity in the `allProducts` state
       if (action === "plus") {
         newProducts[index].quantity = parseInt(itemquantity) + 1;
       } else {
         newProducts[index].quantity = parseInt(itemquantity) - 1;
       }
-      setAllProducts(newProducts); // Update state with modified data  
-      
+      setAllProducts(newProducts); // Update state with modified data
+
       // Now make the API call to persist changes
       setLoading(true);
       const response = await fetch("/api/action", {
@@ -143,21 +143,19 @@ export default function Home() {
         },
         body: JSON.stringify({ action, productName, itemquantity }), // Pass action, product name, and current quantity
       });
-  
+
       const res = await response.json();
       setLoading(false);
-  
+
       // Optionally, handle any response-specific updates if needed (like error handling or syncing state based on server data)
-  
     } catch (error) {
       console.error("Error in updating quantity:", error);
       setLoading(false); // Stop loading on error
     }
   };
-  
 
   useEffect(() => {
-    getAllProduct();    
+    getAllProduct();
   }, []);
 
   return (
@@ -166,25 +164,44 @@ export default function Home() {
       <div className="bg-gray-200 p-2 relative">
         <h1 className="text-3xl font-bold mb-2">Search a product</h1>
         <div className="relative">
-          <input 
-            onChange={dropdownEdit} 
-            className="p-2 rounded-lg" 
-            type="text" 
+          <input
+            onChange={dropdownEdit}
+            className="p-2 rounded-lg"
+            type="text"
             placeholder="Search for a product..."
           />
-          { dropdown.length > 0 && (
+          {dropdown.length > 0 && (
             <div className="absolute bg-white shadow-lg rounded-lg w-full mt-2 z-10">
               {dropdown.map((item) => (
-                <div 
-                  className="flex justify-between p-2 hover:bg-gray-200" 
+                <div
+                  className="flex justify-between p-2 hover:bg-gray-200"
                   key={item._id}
                 >
-                  <span>{item.productName} ({item.quantity} available for ₹{item.price})</span>
+                  <span>
+                    {item.productName} ({item.quantity} available for ₹
+                    {item.price})
+                  </span>
                   {/* <span>{item.quantity}</span> */}
                   <div className="space-x-3">
-                  <button onClick={()=>{buttonAction("minus", item.productName,item.quantity)}} disabled={loading} className="bg-pink-500 px-2 rounded-lg text-white disabled:bg-pink-100">-</button>
-                  <span>{item.quantity}</span>
-                  <button onClick={()=>{buttonAction("plus", item.productName,item.quantity)}} disabled={loading} className="bg-pink-500 px-2 rounded-lg text-white disabled:bg-pink-100">+</button>
+                    <button
+                      onClick={() => {
+                        buttonAction("minus", item.productName, item.quantity);
+                      }}
+                      disabled={loading}
+                      className="bg-pink-500 px-2 rounded-lg text-white disabled:bg-pink-100"
+                    >
+                      -
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button
+                      onClick={() => {
+                        buttonAction("plus", item.productName, item.quantity);
+                      }}
+                      disabled={loading}
+                      className="bg-pink-500 px-2 rounded-lg text-white disabled:bg-pink-100"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               ))}
@@ -211,29 +228,29 @@ export default function Home() {
         <form className="form" onSubmit={AddProduct}>
           <div>
             <label>Product Name</label>
-            <input 
-              value={productForm?.productName || ""} 
-              name="productName" 
-              onChange={handleChange} 
-              type="text" 
+            <input
+              value={productForm?.productName || ""}
+              name="productName"
+              onChange={handleChange}
+              type="text"
             />
           </div>
           <div>
             <label>Quantity</label>
-            <input 
-              value={productForm?.quantity || ""} 
-              name="quantity" 
-              onChange={handleChange} 
-              type="number" 
+            <input
+              value={productForm?.quantity || ""}
+              name="quantity"
+              onChange={handleChange}
+              type="number"
             />
           </div>
           <div>
             <label>Price</label>
-            <input 
-              value={productForm?.price || ""} 
-              name="price" 
-              onChange={handleChange} 
-              type="number" 
+            <input
+              value={productForm?.price || ""}
+              name="price"
+              onChange={handleChange}
+              type="number"
             />
           </div>
           <button type="submit">Add Product</button>
@@ -255,12 +272,18 @@ export default function Home() {
             {allProducts &&
               allProducts.map((data) => (
                 <tr key={data._id}>
-                  <td className="border border-spacing-2">{data.productName}</td>
+                  <td className="border border-spacing-2">
+                    {data.productName}
+                  </td>
                   <td className="border border-spacing-2">{data.quantity}</td>
                   <td className="border border-spacing-2">₹{data.price}</td>
                   <td className="border border-spacing-2 space-x-3">
-                    <button className="bg-green-500 p-2 rounded-xl hover:text-white">Edit</button>
-                    <button className="bg-red-500 p-2 rounded-xl hover:text-white">Delete</button>
+                    <button className="bg-green-500 p-2 rounded-xl hover:text-white">
+                      Edit
+                    </button>
+                    <button className="bg-red-500 p-2 rounded-xl hover:text-white">
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -268,6 +291,5 @@ export default function Home() {
         </table>
       </div>
     </>
-  )
-}  
-
+  );
+}
