@@ -132,20 +132,8 @@ export default function Home() {
       } else {
         newProducts[index].quantity = parseInt(itemquantity) - 1;
       }
-      setAllProducts(newProducts); // Update state with modified data
-  
-      // Find the product index in `dropdown`
-      let indexdrop = dropdown.findIndex((item) => item.productName === productName);
-      let newDropdown = JSON.parse(JSON.stringify(dropdown)); // Deep clone
-  
-      // Update the quantity in the `dropdown` state
-      if (action === "plus") {
-        newDropdown[indexdrop].quantity = parseInt(newDropdown[indexdrop].quantity) + 1;
-      } else {
-        newDropdown[indexdrop].quantity = parseInt(newDropdown[indexdrop].quantity) - 1;
-      }
-      setDropdown(newDropdown); // Update dropdown state
-  
+      setAllProducts(newProducts); // Update state with modified data  
+      
       // Now make the API call to persist changes
       setLoading(true);
       const response = await fetch("/api/action", {
